@@ -1,10 +1,21 @@
+import { MouseEvent } from 'react';
 import styled from 'styled-components';
-import { CellState, PositionInfo } from '../interfaces';
+import {
+  CellState,
+  Board,
+  PositionInfo,
+  GameState,
+} from '../interfaces/interfaces';
+import { countMineAround, createNewMineBoard } from '../utils';
 
 interface CellProps {
   cellState: CellState;
   positionInfo: PositionInfo;
-  mineBoard: CellState[][];
+  mineBoard: Board;
+  mineCount: number;
+  updateMineBoard: (newMineBoard: Board) => void;
+  updateGameState: (newGameState: GameState) => void;
+  updateMineCount: (newMineCount: number) => void;
 }
 
 const CellContainer = styled.div`
@@ -20,12 +31,68 @@ const CellContainer = styled.div`
   }
 `;
 
-const Cell = ({ cellState, positionInfo, mineBoard }: CellProps) => {
+const Cell = ({
+  cellState,
+  positionInfo,
+  mineBoard,
+  mineCount,
+  updateMineBoard,
+  updateGameState,
+  updateMineCount,
+}: CellProps) => {
   const onCellClick = () => {
-    console.log('cellClick', cellState, positionInfo, mineBoard);
+    if (cellState === 'flag' || typeof cellState === 'number') return;
+
+    if (cellState === 'mine') {
+      updateGameState('GAME_OVER');
+      return;
+    }
+
+    if (cellState === 'none') {
+      const mineCountAroundCell = countMineAround(positionInfo);
+      const newMineBoard: Board = createNewMineBoard.noneToNumber(
+        mineBoard,
+        positionInfo,
+        mineCountAroundCell,
+      );
+      updateMineBoard(newMineBoard);
+      return;
+    }
   };
 
-  return <CellContainer onClick={onCellClick}>{cellState}</CellContainer>;
+  const onCellRightClick = (e: MouseEvent) => {
+    e.preventDefault();
+
+    if (typeof cellState === 'number') return;
+
+    if (cellState === 'none' || cellState === 'mine') {
+      if (mineCount - 1 < 0) return;
+
+      const newMineBoard: Board = createNewMineBoard.somethingToFlag(
+        mineBoard,
+        positionInfo,
+      );
+      updateMineBoard(newMineBoard);
+      updateMineCount(mineCount - 1);
+      return;
+    }
+
+    if (cellState === 'flag') {
+      const newMineBoard: Board = createNewMineBoard.flagToSomething(
+        mineBoard,
+        positionInfo,
+      );
+      updateMineBoard(newMineBoard);
+      updateMineCount(mineCount + 1);
+      return;
+    }
+  };
+
+  return (
+    <CellContainer onClick={onCellClick} onContextMenu={onCellRightClick}>
+      {cellState}
+    </CellContainer>
+  );
 };
 
 export default Cell;
