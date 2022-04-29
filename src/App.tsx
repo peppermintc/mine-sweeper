@@ -25,6 +25,7 @@ const App = () => {
   const [showCompleteModal, setShowCompleteModal] = useState<boolean>(false);
 
   const updateMineBoard = (newMineBoard: Board) => setMineBoard(newMineBoard);
+  const updateMineCount = (newMineCount: number) => setMineCount(newMineCount);
   const updateGameState = (newGameState: GameState) =>
     setGameState(newGameState);
 
@@ -85,8 +86,10 @@ const App = () => {
       {mineBoard && (
         <MineBoard
           mineBoard={mineBoard}
+          mineCount={mineCount}
           gameState={gameState}
           updateMineBoard={updateMineBoard}
+          updateMineCount={updateMineCount}
           updateGameState={updateGameState}
         />
       )}

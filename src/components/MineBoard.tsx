@@ -4,9 +4,11 @@ import Cell from './Cell';
 
 interface MineBoardProps {
   mineBoard: Board;
+  mineCount: number;
   gameState: GameState;
   updateMineBoard: (newMineBoard: Board) => void;
   updateGameState: (newGameState: GameState) => void;
+  updateMineCount: (newMineCount: number) => void;
 }
 
 const MineBoardContainer = styled.div<{ disabled: boolean }>`
@@ -18,9 +20,11 @@ const MineBoardContainer = styled.div<{ disabled: boolean }>`
 
 const MineBoard = ({
   mineBoard,
+  mineCount,
   gameState,
   updateMineBoard,
   updateGameState,
+  updateMineCount,
 }: MineBoardProps) => {
   const renderMineBoard = (): React.ReactNode[] => {
     const result: React.ReactNode[] = [];
@@ -40,8 +44,10 @@ const MineBoard = ({
               column: columnIndex,
             }}
             mineBoard={mineBoard}
+            mineCount={mineCount}
             updateMineBoard={updateMineBoard}
             updateGameState={updateGameState}
+            updateMineCount={updateMineCount}
           />,
         );
       });

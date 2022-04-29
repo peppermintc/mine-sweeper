@@ -12,8 +12,10 @@ interface CellProps {
   cellState: CellState;
   positionInfo: PositionInfo;
   mineBoard: Board;
+  mineCount: number;
   updateMineBoard: (newMineBoard: Board) => void;
   updateGameState: (newGameState: GameState) => void;
+  updateMineCount: (newMineCount: number) => void;
 }
 
 const CellContainer = styled.div`
@@ -33,8 +35,10 @@ const Cell = ({
   cellState,
   positionInfo,
   mineBoard,
+  mineCount,
   updateMineBoard,
   updateGameState,
+  updateMineCount,
 }: CellProps) => {
   const onCellClick = () => {
     if (cellState === 'flag' || typeof cellState === 'number') return;
@@ -62,11 +66,14 @@ const Cell = ({
     if (typeof cellState === 'number') return;
 
     if (cellState === 'none' || cellState === 'mine') {
+      if (mineCount - 1 < 0) return;
+
       const newMineBoard: Board = createNewMineBoard.somethingToFlag(
         mineBoard,
         positionInfo,
       );
       updateMineBoard(newMineBoard);
+      updateMineCount(mineCount - 1);
       return;
     }
 
@@ -76,6 +83,7 @@ const Cell = ({
         positionInfo,
       );
       updateMineBoard(newMineBoard);
+      updateMineCount(mineCount + 1);
       return;
     }
   };
