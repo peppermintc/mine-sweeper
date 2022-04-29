@@ -39,6 +39,11 @@ const App = () => {
     setMineBoard(newMineBoard);
   };
 
+  const onResetButtonClick = () => {
+    closeAllModal();
+    copyAndResetMineBoard();
+  };
+
   useLayoutEffect(() => {
     copyAndResetMineBoard();
   }, []);
@@ -84,6 +89,7 @@ const App = () => {
       {!mineBoard && 'Loading Mine Board...'}
       {showGameOverModal && <GameOverModal updateGameState={updateGameState} />}
       {showCompleteModal && <CompleteModal updateGameState={updateGameState} />}
+      <button onClick={onResetButtonClick}>다시 시작하기</button>
     </MineSweeperPage>
   );
 };
