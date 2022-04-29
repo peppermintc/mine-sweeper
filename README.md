@@ -4,6 +4,28 @@
 
 ---
 
+## 구현 후 정리
+
+### Redux를 사용하지 않았던 것은 잘 한 선택이었는지에 대한 고민
+
+Prop drilling 최대 depth가 두단계로 깊지 않았고 (`App > MineBoard > Cell`)
+
+컴포넌트 Props들을 읽음으로써 컴포넌트 파악에 도움이 될 수도 있다는 측면에서는 좋은 선택이었던 것 같습니다.
+
+```HTML
+예) <CompleteModal updateRankData={rankData} updateGameState={updateGameState} ... />
+
+// 이 모달에서는 랭크 데이터와 게임 상태를 업데이트한다는 것을 컴포넌트 코드 내부를 확인하기 전에 알 수 있음
+```
+
+불편했던 점은 컴포넌트에 전달할 Prop을 새롭게 추가할 때마다 Props interface에 새롭게 값을 추가하는 번거로움이 있었습니다.
+
+만약 Redux를 사용했다면 interface로 Props의 명세를 적는 것에 대한 부담은 조금 덜었을 수도 있을 것 같습니다.
+
+앱의 기능이 조금만 커져도 전역상태관리 라이브러리를 사용하는 것이 좋겠다는 생각이 들었습니다.
+
+---
+
 ## 구현 시작 전 설계
 
 ### 컴포넌트 설계
