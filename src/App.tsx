@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components';
+import CompleteModal from './components/CompleteModal';
 import GameOverModal from './components/GameOverModal';
 import MineBoard from './components/MineBoard';
 import { MINE_BOARD_ORIGINAL } from './data/boardData';
@@ -18,10 +19,16 @@ const App = () => {
   const [gameState, setGameState] = useState<GameState>('PLAYING');
   const [mineBoard, setMineBoard] = useState<Board>();
   const [showGameOverModal, setShowGameOverModal] = useState<boolean>(false);
+  const [showCompleteModal, setShowCompleteModal] = useState<boolean>(false);
 
   const updateMineBoard = (newMineBoard: Board) => setMineBoard(newMineBoard);
   const updateGameState = (newGameState: GameState) =>
     setGameState(newGameState);
+
+  const closeAllModal = () => {
+    setShowCompleteModal(false);
+    setShowGameOverModal(false);
+  };
 
   const copyAndResetMineBoard = () => {
     const newMineBoard: Board = [];
@@ -37,7 +44,7 @@ const App = () => {
 
   useEffect(() => {
     if (gameState === 'COMPLETE') {
-      console.log('show complete modal');
+      setShowCompleteModal(true);
       return;
     }
     if (gameState === 'GAME_OVER') {
@@ -45,7 +52,7 @@ const App = () => {
       return;
     }
     if (gameState === 'PLAYING') {
-      setShowGameOverModal(false);
+      closeAllModal();
       copyAndResetMineBoard();
       return;
     }
@@ -53,7 +60,7 @@ const App = () => {
 
   // useEffect(() => {
   //   setTimeout(() => {
-  //     setGameState('PLAYING');
+  //     setGameState('COMPLETE');
   //   }, 3000);
   // }, []);
 
@@ -68,6 +75,7 @@ const App = () => {
       )}
       {!mineBoard && 'Loading Mine Board...'}
       {showGameOverModal && <GameOverModal updateGameState={updateGameState} />}
+      {showCompleteModal && <CompleteModal updateGameState={updateGameState} />}
     </MineSweeperPage>
   );
 };
