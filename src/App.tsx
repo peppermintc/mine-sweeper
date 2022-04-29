@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import CompleteModal from './components/CompleteModal';
 import GameOverModal from './components/GameOverModal';
 import MineBoard from './components/MineBoard';
-import { MINE_BOARD_ORIGINAL } from './data/boardData';
+import MineCount from './components/MineCount';
+import { MINE_BOARD_ORIGINAL, MINE_COUNT } from './data/boardData';
 import { Board, GameState } from './interfaces/interfaces';
 import { checkComplete } from './utils';
 
@@ -19,6 +20,7 @@ const MineSweeperPage = styled.div`
 const App = () => {
   const [gameState, setGameState] = useState<GameState>('PLAYING');
   const [mineBoard, setMineBoard] = useState<Board>();
+  const [mineCount, setMineCount] = useState<number>(MINE_COUNT);
   const [showGameOverModal, setShowGameOverModal] = useState<boolean>(false);
   const [showCompleteModal, setShowCompleteModal] = useState<boolean>(false);
 
@@ -31,21 +33,22 @@ const App = () => {
     setShowGameOverModal(false);
   };
 
-  const copyAndResetMineBoard = () => {
+  const copyAndResetGame = () => {
     const newMineBoard: Board = [];
     MINE_BOARD_ORIGINAL.forEach((mineBoardRow) =>
       newMineBoard.push([...mineBoardRow]),
     );
     setMineBoard(newMineBoard);
+    setMineCount(MINE_COUNT);
   };
 
   const onResetButtonClick = () => {
     closeAllModal();
-    copyAndResetMineBoard();
+    copyAndResetGame();
   };
 
   useLayoutEffect(() => {
-    copyAndResetMineBoard();
+    copyAndResetGame();
   }, []);
 
   useEffect(() => {
@@ -59,7 +62,7 @@ const App = () => {
     }
     if (gameState === 'PLAYING') {
       closeAllModal();
-      copyAndResetMineBoard();
+      copyAndResetGame();
       return;
     }
   }, [gameState]);
@@ -78,6 +81,7 @@ const App = () => {
 
   return (
     <MineSweeperPage>
+      <MineCount mineCount={mineCount} />
       {mineBoard && (
         <MineBoard
           mineBoard={mineBoard}
