@@ -17,7 +17,9 @@ const Timer = ({ gameState, currentTime, updateCurrentTime }: TimerProps) => {
 
   useEffect(() => {
     if (isTimerOn === false) return;
-    else setTimeout(() => updateCurrentTime(currentTime + 1), 1000);
+
+    const timeout = setTimeout(() => updateCurrentTime(currentTime + 1), 1000);
+    return () => clearTimeout(timeout);
   }, [isTimerOn, currentTime, updateCurrentTime]);
 
   return <h3>소요 시간: {currentTime}초</h3>;
