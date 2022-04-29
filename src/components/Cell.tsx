@@ -1,10 +1,12 @@
 import styled from 'styled-components';
-import { CellState, PositionInfo } from '../interfaces/interfaces';
+import { CellState, Board, PositionInfo } from '../interfaces/interfaces';
+import { countMineAround, createNewMineBoard } from '../utils';
 
 interface CellProps {
   cellState: CellState;
   positionInfo: PositionInfo;
-  mineBoard: CellState[][];
+  mineBoard: Board;
+  updateMineBoard: (newMineBoard: Board) => void;
 }
 
 const CellContainer = styled.div`
@@ -20,9 +22,24 @@ const CellContainer = styled.div`
   }
 `;
 
-const Cell = ({ cellState, positionInfo, mineBoard }: CellProps) => {
+const Cell = ({
+  cellState,
+  positionInfo,
+  mineBoard,
+  updateMineBoard,
+}: CellProps) => {
   const onCellClick = () => {
-    console.log('cellClick', cellState, positionInfo, mineBoard);
+    if (cellState === 'flag' || typeof cellState === 'number') return;
+    if (cellState === 'mine') return console.log('game over');
+    if (cellState === 'none') {
+      const mineCountAroundCell = countMineAround(positionInfo);
+      const newMineBoard: Board = createNewMineBoard(
+        mineBoard,
+        positionInfo,
+        mineCountAroundCell,
+      );
+      updateMineBoard(newMineBoard);
+    }
   };
 
   return <CellContainer onClick={onCellClick}>{cellState}</CellContainer>;
