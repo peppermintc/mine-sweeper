@@ -12,8 +12,8 @@ const GameOverModal = ({ updateGameState }: GameOverModalProps) => {
 
   return (
     <ModalContainer>
-      <h1>지뢰입니다 ㅜㅜ</h1>
-      <h1>다시 시작 가능합니다!</h1>
+      <h3>지뢰입니다 ㅜㅜ</h3>
+      <h3>다시 시작 가능합니다!</h3>
       <button onClick={onRestartButtonClick}>다시 도전하기</button>
     </ModalContainer>
   );
