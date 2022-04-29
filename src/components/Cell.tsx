@@ -38,7 +38,12 @@ const Cell = ({
 }: CellProps) => {
   const onCellClick = () => {
     if (cellState === 'flag' || typeof cellState === 'number') return;
-    if (cellState === 'mine') updateGameState('GAME_OVER');
+
+    if (cellState === 'mine') {
+      updateGameState('GAME_OVER');
+      return;
+    }
+
     if (cellState === 'none') {
       const mineCountAroundCell = countMineAround(positionInfo);
       const newMineBoard: Board = createNewMineBoard.noneToNumber(
@@ -47,6 +52,7 @@ const Cell = ({
         mineCountAroundCell,
       );
       updateMineBoard(newMineBoard);
+      return;
     }
   };
 
@@ -54,11 +60,24 @@ const Cell = ({
     e.preventDefault();
 
     if (typeof cellState === 'number') return;
-    if (cellState === 'none') {
-      return console.log('none > flag');
+
+    if (cellState === 'none' || cellState === 'mine') {
+      const newMineBoard: Board = createNewMineBoard.somethingToFlag(
+        mineBoard,
+        positionInfo,
+      );
+      updateMineBoard(newMineBoard);
+      return;
     }
-    if (cellState === 'mine') return console.log('mine > flag');
-    if (cellState === 'flag') return console.log('flag > originalState');
+
+    if (cellState === 'flag') {
+      const newMineBoard: Board = createNewMineBoard.flagToSomething(
+        mineBoard,
+        positionInfo,
+      );
+      updateMineBoard(newMineBoard);
+      return;
+    }
   };
 
   return (
