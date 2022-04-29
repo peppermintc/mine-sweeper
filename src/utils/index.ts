@@ -42,7 +42,7 @@ export const countMineAround = (positionInfo: PositionInfo): number => {
   return MINE_COUNT;
 };
 
-export const createNewMineBoard = (
+const noneToNumber = (
   mineBoard: Board,
   positionInfo: PositionInfo,
   mineCountAroundCell: number,
@@ -64,3 +64,5 @@ export const createNewMineBoard = (
 
   return newMineBoard;
 };
+
+export const createNewMineBoard = { noneToNumber: noneToNumber };

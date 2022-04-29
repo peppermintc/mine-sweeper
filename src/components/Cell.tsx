@@ -41,7 +41,7 @@ const Cell = ({
     if (cellState === 'mine') updateGameState('GAME_OVER');
     if (cellState === 'none') {
       const mineCountAroundCell = countMineAround(positionInfo);
-      const newMineBoard: Board = createNewMineBoard(
+      const newMineBoard: Board = createNewMineBoard.noneToNumber(
         mineBoard,
         positionInfo,
         mineCountAroundCell,
