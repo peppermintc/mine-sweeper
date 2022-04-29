@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components';
+import GameOverModal from './components/GameOverModal';
 import MineBoard from './components/MineBoard';
 import { MINE_BOARD_ORIGINAL } from './data/boardData';
 import { Board, GameState } from './interfaces/interfaces';
@@ -16,6 +17,7 @@ const MineSweeperPage = styled.div`
 const App = () => {
   const [gameState, setGameState] = useState<GameState>('PLAYING');
   const [mineBoard, setMineBoard] = useState<Board>();
+  const [showGameOverModal, setShowGameOverModal] = useState<boolean>(false);
 
   const updateMineBoard = (newMineBoard: Board) => setMineBoard(newMineBoard);
   const updateGameState = (newGameState: GameState) =>
@@ -39,10 +41,11 @@ const App = () => {
       return;
     }
     if (gameState === 'GAME_OVER') {
-      console.log('show game over modal');
+      setShowGameOverModal(true);
       return;
     }
     if (gameState === 'PLAYING') {
+      setShowGameOverModal(false);
       copyAndResetMineBoard();
       return;
     }
@@ -64,6 +67,7 @@ const App = () => {
         />
       )}
       {!mineBoard && 'Loading Mine Board...'}
+      {showGameOverModal && <GameOverModal updateGameState={updateGameState} />}
     </MineSweeperPage>
   );
 };
