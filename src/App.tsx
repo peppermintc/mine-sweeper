@@ -69,6 +69,7 @@ const App = () => {
       {mineBoard && (
         <MineBoard
           mineBoard={mineBoard}
+          gameState={gameState}
           updateMineBoard={updateMineBoard}
           updateGameState={updateGameState}
         />

@@ -4,18 +4,21 @@ import Cell from './Cell';
 
 interface MineBoardProps {
   mineBoard: Board;
+  gameState: GameState;
   updateMineBoard: (newMineBoard: Board) => void;
   updateGameState: (newGameState: GameState) => void;
 }
 
-const MineBoardContainer = styled.div`
+const MineBoardContainer = styled.div<{ disabled: boolean }>`
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   border: 1px solid black;
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
 `;
 
 const MineBoard = ({
   mineBoard,
+  gameState,
   updateMineBoard,
   updateGameState,
 }: MineBoardProps) => {
@@ -47,7 +50,11 @@ const MineBoard = ({
     return result;
   };
 
-  return <MineBoardContainer>{renderMineBoard()}</MineBoardContainer>;
+  return (
+    <MineBoardContainer disabled={gameState !== 'PLAYING'}>
+      {renderMineBoard()}
+    </MineBoardContainer>
+  );
 };
 
 export default MineBoard;
