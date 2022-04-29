@@ -1,8 +1,8 @@
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components';
 import MineBoard from './components/MineBoard';
 import { MINE_BOARD_ORIGINAL } from './data/boardData';
-import { Board } from './interfaces/interfaces';
+import { Board, GameState } from './interfaces/interfaces';
 
 const MineSweeperPage = styled.div`
   height: 100vh;
@@ -14,11 +14,12 @@ const MineSweeperPage = styled.div`
 `;
 
 const App = () => {
+  const [gameState, setGameState] = useState<GameState>('PLAYING');
   const [mineBoard, setMineBoard] = useState<Board>();
 
-  const updateMineBoard = (newMineBoard: Board) => {
-    setMineBoard(newMineBoard);
-  };
+  const updateMineBoard = (newMineBoard: Board) => setMineBoard(newMineBoard);
+  const updateGameState = (newGameState: GameState) =>
+    setGameState(newGameState);
 
   useLayoutEffect(() => {
     const copyAndInitMineBoard = () => {
@@ -33,10 +34,18 @@ const App = () => {
     copyAndInitMineBoard();
   }, []);
 
+  useEffect(() => {
+    console.log(gameState);
+  }, [gameState]);
+
   return (
     <MineSweeperPage>
       {mineBoard && (
-        <MineBoard mineBoard={mineBoard} updateMineBoard={updateMineBoard} />
+        <MineBoard
+          mineBoard={mineBoard}
+          updateMineBoard={updateMineBoard}
+          updateGameState={updateGameState}
+        />
       )}
       {!mineBoard && 'Loading Mine Board...'}
     </MineSweeperPage>

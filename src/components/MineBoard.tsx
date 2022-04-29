@@ -1,10 +1,11 @@
 import styled from 'styled-components';
-import { Board } from '../interfaces/interfaces';
+import { Board, GameState } from '../interfaces/interfaces';
 import Cell from './Cell';
 
 interface MineBoardProps {
   mineBoard: Board;
   updateMineBoard: (newMineBoard: Board) => void;
+  updateGameState: (newGameState: GameState) => void;
 }
 
 const MineBoardContainer = styled.div`
@@ -13,7 +14,11 @@ const MineBoardContainer = styled.div`
   border: 1px solid black;
 `;
 
-const MineBoard = ({ mineBoard, updateMineBoard }: MineBoardProps) => {
+const MineBoard = ({
+  mineBoard,
+  updateMineBoard,
+  updateGameState,
+}: MineBoardProps) => {
   const renderMineBoard = (): React.ReactNode[] => {
     const result: React.ReactNode[] = [];
 
@@ -33,6 +38,7 @@ const MineBoard = ({ mineBoard, updateMineBoard }: MineBoardProps) => {
             }}
             mineBoard={mineBoard}
             updateMineBoard={updateMineBoard}
+            updateGameState={updateGameState}
           />,
         );
       });
