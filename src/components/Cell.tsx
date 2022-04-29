@@ -7,6 +7,7 @@ import {
   GameState,
 } from '../interfaces/interfaces';
 import { countMineAround, createNewMineBoard } from '../utils';
+import RedFlag from '../img/redFlag.png';
 
 interface CellProps {
   cellState: CellState;
@@ -18,7 +19,7 @@ interface CellProps {
   updateMineCount: (newMineCount: number) => void;
 }
 
-const CellContainer = styled.div`
+const CellContainer = styled.div<{ isNumber: boolean; isFlag: boolean }>`
   width: 50px;
   height: 50px;
   border: 1px solid black;
@@ -26,6 +27,11 @@ const CellContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: ${({ isNumber, isFlag }) => {
+    if (isNumber) return 'lightyellow';
+    if (isFlag) return 'lightgreen';
+    else return 'white';
+  }};
   &:hover {
     background-color: lightgray;
   }
@@ -88,9 +94,21 @@ const Cell = ({
     }
   };
 
+  const renderCellState = () => {
+    if (cellState === 0) return '';
+    if (typeof cellState === 'number') return cellState;
+    if (cellState === 'mine' || cellState === 'none') return '';
+    if (cellState === 'flag') return <img src={RedFlag} alt="flag" />;
+  };
+
   return (
-    <CellContainer onClick={onCellClick} onContextMenu={onCellRightClick}>
-      {cellState}
+    <CellContainer
+      onClick={onCellClick}
+      onContextMenu={onCellRightClick}
+      isNumber={typeof cellState === 'number'}
+      isFlag={cellState === 'flag'}
+    >
+      {renderCellState()}
     </CellContainer>
   );
 };
