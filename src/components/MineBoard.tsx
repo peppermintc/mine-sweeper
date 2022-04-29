@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { CellState } from '../interfaces';
+import { CellState } from '../interfaces/interfaces';
 import Cell from './Cell';
 
 interface MineBoardProps {

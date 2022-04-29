@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import MineBoard from './components/MineBoard';
-import { MINE_BOARD } from './data';
+import { MINE_BOARD } from './data/boardData';
 
 const MineSweeperPage = styled.div`
   height: 100vh;

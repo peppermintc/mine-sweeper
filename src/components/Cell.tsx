@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { CellState, PositionInfo } from '../interfaces';
+import { CellState, PositionInfo } from '../interfaces/interfaces';
 
 interface CellProps {
   cellState: CellState;
