@@ -70,15 +70,18 @@ const App = () => {
 
   useEffect(() => {
     if (!mineBoard) return;
-    const isCompleted = checkComplete(mineBoard);
-    if (isCompleted === true) updateGameState('COMPLETE');
-  }, [mineBoard]);
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setGameState('COMPLETE');
-  //   }, 3000);
-  // }, []);
+    let isCompleted: boolean = false;
+    let didFoundAllMine: boolean = false;
+    let didFoundAllNone: boolean = false;
+
+    didFoundAllNone = checkComplete.foundAllNone(mineBoard);
+    if (mineCount === 0)
+      didFoundAllMine = checkComplete.foundAllMine(mineBoard);
+
+    isCompleted = didFoundAllMine || didFoundAllNone;
+    if (isCompleted === true) updateGameState('COMPLETE');
+  }, [mineBoard, mineCount]);
 
   return (
     <MineSweeperPage>
