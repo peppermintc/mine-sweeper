@@ -15,6 +15,7 @@ const MineBoardContainer = styled.div<{ disabled: boolean }>`
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   border: 1px solid black;
+  margin: 10px;
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
 `;
 
@@ -31,10 +32,8 @@ const MineBoard = ({
 
     mineBoard.forEach((row, index) => {
       const rowIndex = index;
-
       row.forEach((cellState, index) => {
         const columnIndex = index;
-
         result.push(
           <Cell
             key={`${rowIndex}/${columnIndex}`}
