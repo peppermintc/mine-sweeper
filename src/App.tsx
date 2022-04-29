@@ -4,9 +4,11 @@ import CompleteModal from './components/CompleteModal';
 import GameOverModal from './components/GameOverModal';
 import MineBoard from './components/MineBoard';
 import MineCount from './components/MineCount';
+import RankTable from './components/RankTable';
 import Timer from './components/Timer';
 import { MINE_BOARD_ORIGINAL, MINE_COUNT } from './data/boardData';
-import { Board, GameState } from './interfaces/interfaces';
+import { RANK_DATA } from './data/rankData';
+import { Board, GameState, RankData } from './interfaces/interfaces';
 import { checkComplete } from './utils';
 
 const MineSweeperPage = styled.div`
@@ -19,6 +21,7 @@ const MineSweeperPage = styled.div`
 `;
 
 const App = () => {
+  const [rankData, setRankData] = useState<RankData>(RANK_DATA);
   const [gameState, setGameState] = useState<GameState>('PLAYING');
   const [mineBoard, setMineBoard] = useState<Board>();
   const [mineCount, setMineCount] = useState<number>(MINE_COUNT);
@@ -26,6 +29,7 @@ const App = () => {
   const [showGameOverModal, setShowGameOverModal] = useState<boolean>(false);
   const [showCompleteModal, setShowCompleteModal] = useState<boolean>(false);
 
+  const updateRankData = (newRankData: RankData) => setRankData(newRankData);
   const updateMineBoard = (newMineBoard: Board) => setMineBoard(newMineBoard);
   const updateMineCount = (newMineCount: number) => setMineCount(newMineCount);
   const updateGameState = (newGameState: GameState) =>
@@ -103,13 +107,21 @@ const App = () => {
       )}
       {!mineBoard && 'Loading Mine Board...'}
       {showGameOverModal && <GameOverModal updateGameState={updateGameState} />}
-      {showCompleteModal && <CompleteModal updateGameState={updateGameState} />}
+      {showCompleteModal && (
+        <CompleteModal
+          rankData={rankData}
+          currentTime={currentTime}
+          updateRankData={updateRankData}
+          updateGameState={updateGameState}
+        />
+      )}
       <button onClick={onResetButtonClick}>다시 시작하기</button>
       <Timer
         gameState={gameState}
         currentTime={currentTime}
         updateCurrentTime={updateCurrentTime}
       />
+      <RankTable rankData={rankData} />
     </MineSweeperPage>
   );
 };
