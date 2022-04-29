@@ -1,7 +1,7 @@
-import { CellState } from '../interfaces/interfaces';
+import { Board } from '../interfaces/interfaces';
 
 export const MINE_COUNT = 30;
-export const MINE_BOARD: CellState[][] = [
+export const MINE_BOARD_ORIGINAL: Board = [
   ['none', 'mine', 'none', 'mine', 'mine', 'none', 'none', 'none'],
   ['none', 'none', 'none', 'none', 'none', 'mine', 'none', 'none'],
   ['mine', 'none', 'mine', 'none', 'none', 'mine', 'none', 'mine'],
