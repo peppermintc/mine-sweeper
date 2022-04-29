@@ -4,6 +4,7 @@ import CompleteModal from './components/CompleteModal';
 import GameOverModal from './components/GameOverModal';
 import MineBoard from './components/MineBoard';
 import MineCount from './components/MineCount';
+import Timer from './components/Timer';
 import { MINE_BOARD_ORIGINAL, MINE_COUNT } from './data/boardData';
 import { Board, GameState } from './interfaces/interfaces';
 import { checkComplete } from './utils';
@@ -21,6 +22,7 @@ const App = () => {
   const [gameState, setGameState] = useState<GameState>('PLAYING');
   const [mineBoard, setMineBoard] = useState<Board>();
   const [mineCount, setMineCount] = useState<number>(MINE_COUNT);
+  const [currentTime, setCurrentTime] = useState<number>(0);
   const [showGameOverModal, setShowGameOverModal] = useState<boolean>(false);
   const [showCompleteModal, setShowCompleteModal] = useState<boolean>(false);
 
@@ -28,6 +30,8 @@ const App = () => {
   const updateMineCount = (newMineCount: number) => setMineCount(newMineCount);
   const updateGameState = (newGameState: GameState) =>
     setGameState(newGameState);
+  const updateCurrentTime = (newCurrentTime: number) =>
+    setCurrentTime(newCurrentTime);
 
   const closeAllModal = () => {
     setShowCompleteModal(false);
@@ -41,6 +45,7 @@ const App = () => {
     );
     setMineBoard(newMineBoard);
     setMineCount(MINE_COUNT);
+    setCurrentTime(0);
   };
 
   const onResetButtonClick = () => {
@@ -100,6 +105,11 @@ const App = () => {
       {showGameOverModal && <GameOverModal updateGameState={updateGameState} />}
       {showCompleteModal && <CompleteModal updateGameState={updateGameState} />}
       <button onClick={onResetButtonClick}>다시 시작하기</button>
+      <Timer
+        gameState={gameState}
+        currentTime={currentTime}
+        updateCurrentTime={updateCurrentTime}
+      />
     </MineSweeperPage>
   );
 };
