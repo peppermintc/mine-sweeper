@@ -1,3 +1,4 @@
+import { MouseEvent } from 'react';
 import styled from 'styled-components';
 import {
   CellState,
@@ -49,7 +50,22 @@ const Cell = ({
     }
   };
 
-  return <CellContainer onClick={onCellClick}>{cellState}</CellContainer>;
+  const onCellRightClick = (e: MouseEvent) => {
+    e.preventDefault();
+
+    if (typeof cellState === 'number') return;
+    if (cellState === 'none') {
+      return console.log('none > flag');
+    }
+    if (cellState === 'mine') return console.log('mine > flag');
+    if (cellState === 'flag') return console.log('flag > originalState');
+  };
+
+  return (
+    <CellContainer onClick={onCellClick} onContextMenu={onCellRightClick}>
+      {cellState}
+    </CellContainer>
+  );
 };
 
 export default Cell;
