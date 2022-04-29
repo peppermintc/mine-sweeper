@@ -21,22 +21,38 @@ const App = () => {
   const updateGameState = (newGameState: GameState) =>
     setGameState(newGameState);
 
+  const copyAndResetMineBoard = () => {
+    const newMineBoard: Board = [];
+    MINE_BOARD_ORIGINAL.forEach((mineBoardRow) =>
+      newMineBoard.push([...mineBoardRow]),
+    );
+    setMineBoard(newMineBoard);
+  };
+
   useLayoutEffect(() => {
-    const copyAndInitMineBoard = () => {
-      const newMineBoard: Board = [];
-      MINE_BOARD_ORIGINAL.forEach((mineBoardRow) =>
-        newMineBoard.push([...mineBoardRow]),
-      );
-
-      setMineBoard(newMineBoard);
-    };
-
-    copyAndInitMineBoard();
+    copyAndResetMineBoard();
   }, []);
 
   useEffect(() => {
-    console.log(gameState);
+    if (gameState === 'COMPLETE') {
+      console.log('show complete modal');
+      return;
+    }
+    if (gameState === 'GAME_OVER') {
+      console.log('show game over modal');
+      return;
+    }
+    if (gameState === 'PLAYING') {
+      copyAndResetMineBoard();
+      return;
+    }
   }, [gameState]);
+
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setGameState('PLAYING');
+  //   }, 3000);
+  // }, []);
 
   return (
     <MineSweeperPage>
