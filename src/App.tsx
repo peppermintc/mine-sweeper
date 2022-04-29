@@ -5,6 +5,7 @@ import GameOverModal from './components/GameOverModal';
 import MineBoard from './components/MineBoard';
 import { MINE_BOARD_ORIGINAL } from './data/boardData';
 import { Board, GameState } from './interfaces/interfaces';
+import { checkComplete } from './utils';
 
 const MineSweeperPage = styled.div`
   height: 100vh;
@@ -57,6 +58,12 @@ const App = () => {
       return;
     }
   }, [gameState]);
+
+  useEffect(() => {
+    if (!mineBoard) return;
+    const isCompleted = checkComplete(mineBoard);
+    if (isCompleted === true) updateGameState('COMPLETE');
+  }, [mineBoard]);
 
   // useEffect(() => {
   //   setTimeout(() => {

@@ -1,5 +1,19 @@
-import { MINE_BOARD_ORIGINAL } from '../data/boardData';
+import {
+  MINE_BOARD_ORIGINAL,
+  MINE_COUNT,
+  TOTAL_CELL_COUNT,
+} from '../data/boardData';
 import { CellState, Board, PositionInfo } from '../interfaces/interfaces';
+
+export const checkComplete = (mineBoard: Board): boolean => {
+  let numberCount: number = 0;
+  mineBoard.forEach((row) =>
+    row.forEach((cellState) => typeof cellState === 'number' && numberCount++),
+  );
+
+  if (numberCount === TOTAL_CELL_COUNT - MINE_COUNT) return true;
+  else return false;
+};
 
 export const countMineAround = (positionInfo: PositionInfo): number => {
   const { row, column } = positionInfo;

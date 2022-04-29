@@ -1,5 +1,6 @@
 import { Board } from '../interfaces/interfaces';
 
+export const TOTAL_CELL_COUNT = 64;
 export const MINE_COUNT = 30;
 export const MINE_BOARD_ORIGINAL: Board = [
   ['none', 'mine', 'none', 'mine', 'mine', 'none', 'none', 'none'],
