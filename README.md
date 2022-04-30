@@ -1,7 +1,7 @@
 # Mine Sweeper
 
-- 2022.4.29: 개발 시작, 기능 구현 완료
-- 2022.4.30: README.md 작성, CSS style 수정
+- 2022.4.29: 개발 시작, 기능 구현
+- 2022.4.30: README.md 작성, 코드 분리, 작은 수정
 
 <img src="./previews/preview.png" alt="preview" />
 
@@ -27,153 +27,102 @@
 
 ## 프로젝트 설명
 
-### 1. 구현 상세
+### 셀 상태 (cellState)
 
-- UI
-  - `남은 지뢰 개수`
-  - `8x8 보드`
-  - `소요 시간`
-  - `기록 순위표`
-  - `성공 모달`
-  - `실패 모달`
-  - `다시 시작하기 버튼`
-- 셀 클릭 동작
+cellState는 4가지 상태 중 한가지를 가집니다
 
-  - 좌 클릭
-    - `지뢰일 경우`: 게임 오버
-    - `지뢰가 아닐 경우`: 숫자로 주변 지뢰 개수 표시
-    - `깃발, 숫자일 경우`: 아무동작도 일어나지 않음
-  - 우 클릭
-    - `지뢰, 지뢰가 아닐 경우`: 깃발 표시, 남은 지뢰 개수 - 1
-      (남은 지뢰 개수가 0이라면 깃발을 표시하지 않고 아무 동작도 일어나지 않음)
-    - `깃발일 경우`: 깃발 제거, 남은 지뢰 개수 + 1
-    - `숫자일 경우`: 아무동작도 일어나지 않음
+- `'mine'`: 지뢰 O
+- `'none'`: 지뢰 X, 사용자가 확인하지 않은 상태
+- `'flag'`: 깃발, 사용자가 지뢰로 간주한 상태
+- `number`: 지뢰 X, 사용자가 확인한 상태, 인접 셀 지뢰 개수
 
-### 2. 안내사항
+### 셀 클릭 동작
 
-#### 지뢰 보드 원본과 사본
+셀 상태(cellState)값에 따라 다르게 동작합니다
 
-깃발 기능을 사용하면 이전 cellState가 지워지고 값이 `flag`로 변합니다. 이 때문에 원본 값은 따로 보관시키고 동적으로 변화하는 복사본 보드가 필요했습니다.
+- 좌 클릭
+  - `'mine'`: gameState > GAME_OVER
+  - `'none'`: cellState > 주변 지뢰 개수
+  - `'flag'`: 아무 동작도 일어나지 않음
+  - `number`: 아무 동작도 일어나지 않음
+- 우 클릭
+  - `'mine'`: cellState > flag, mineCount - 1
+    - mineCount가 0이면 cellState를 변경하지 않고 아무 동작도 일어나지 않음
+  - `'none'`: cellState > flag, mineCount - 1
+    - mineCount가 0이면 cellState를 변경하지 않고 아무 동작도 일어나지 않음
+  - `'flag'`: cellState flag > 원본(MINE_BOARD_ORIGINAL)의 cellState, mineCount + 1
+  - `number`: 아무 동작도 일어나지 않음
 
-- `MINE_BOARD_ORIGINAL`: 지뢰 보드 원본입니다. 원본 관련 변수들은 변수명에 대문자를 사용하였습니다.
-- `mineBoard`: 지뢰보드 복사본입니다.
+### 지뢰보드 원본과 사본 (MINE_BOARD_ORIGINAL & mineBoard)
 
-#### 셀 상태 (cellState)
+깃발 기능을 사용할 때 cellState가 지워지고 값이 `flag`로 변합니다. 때문에 원본 값은 따로 보관시키고 동적으로 변화하는 복사본 보드가 필요했습니다. 원본 데이터 관련 변수들은 변수명에 영어 대문자를 사용하였습니다.
 
-셀은 4가지 상태 중 하나를 가집니다.
+- `MINE_BOARD_ORIGINAL`: 지뢰보드 원본
+- `mineBoard`: 지뢰보드 복사본
 
-- `mine`: 지뢰
-- `none`: 지뢰 X, 아직 확인되지 않은 상태
-- `flag`: 깃발
-- `숫자`: 인접한 셀들의 지뢰의 개수, 자신은 지뢰가 X
+### Util 함수 구성
 
-### 3. 폴더 구조
+게임에서 뷰와 분리가 가능한 독립적인 기능을하는 함수들을 Utils 폴더에 따로 분리하였습니다.
+
+- `countMineAround.ts`: 인접 셀 지뢰 개수 카운트
+- `checkComplete.ts`: 게임 성공 여부 체크
+  - `foundAllNone`: 지뢰가 아닌 모든 칸을 확인했는지 판별 (mineBoard에서 `number` 개수를 카운트)
+  - `foundAllMine`: 지뢰를 모두 깃발로 알맞게 표시했는지 판별 (MINE_BOARD_ORIGINAL `mine`과 mineBoard `flag`를 비교)
+- `createNewBoard.ts`: 업데이트된 새로운 보드를 리턴
+  - `noneToNumber`: 클릭한 cellState `'none'`에서 `number`로 변경
+  - `somethingToFlag`: 클릭한 cellState를 `'flag'`로 변경
+  - `flagToSomething`: 클릭한 cellState를 `'flag''`에서 원본보드 cellState로 변경
+
+### gameState에 따른 동작
+
+게임 상태를 나타내는 gameState 값에 따라 모달을 열고 닫는 동작을 수행합니다.
+
+- `'COMPLETE'`: 성공 모달 표시
+- `'GAME_OVER'`: 게임 오버 모달 표시
+- `'PLAYING'`: 모든 모달을 닫고 새로운 게임 시작
+
+### UI 컴포넌트 구성
+
+- `남은 지뢰 개수`: MineCount.tsx,
+- `8x8 보드`: MineBoard.tsx, Cell.tsx
+- `소요 시간`: Timer.tsx
+- `기록 순위표`: RankTable.tsx
+- `성공 모달`: CompleteModal.tsx
+- `실패 모달`: GameOverModal.tsx
+
+### 폴더 구성
 
 - `components`: React UI 컴포넌트 파일 보관
-  - `Cell.tsx`: 셀
-  - `CompleteModal.tsx`: 성공시 보여지는 모달
-  - `GameOverModal.tsx`: 실패시 보여지는 모달
-  - `MineBoard.tsx`: 지뢰판 8x8
-  - `MineCount.tsx`: 남은 지뢰 개수 표시
-  - `ModalContainer.tsx`: 모달에 공통으로 사용되는 컨테이너 컴포넌트
-  - `RankTable.tsx`: 기록 순위표 표시
-  - `Timer.tsx`: 소요 시간 표시
 - `data`: 보드 데이터, 랭킹 데이터 원본 보관
 - `img`: 이미지 파일 보관
 - `interfaces`: 타입스크립트 인터페이스, 타입 코드 보관
 - `utils`: util 함수들 보관
-  - `checkComplete.ts`: 게임 성공 여부 체크 함수 보관
-  - `countMineAround.ts`: 주변 지뢰 개수 카운트 해주는 함수 보관
-  - `createNewBoard.ts`: 업데이트된 새로운 보드를 리턴해주는 함수 보관
 
-### 5. 상태 값
+### 상태 값
 
-```javascript
-// App State
-{
-  rankData,   // 복사본
-  mineBoard,  // 복사본
-  mineCount,  // 복사본
-  gameState,
-  currentTime,
-  showGameOverModal,
-  showCompleteModla,
-}
+- App State
+  - `rankData` // 복사본
+  - `mineBoard` // 복사본
+  - `mineCount` // 복사본
+  - `gameState`
+  - `currentTime`
+  - `showGameOverModal`
+  - `showCompleteModla`
+- boardData.ts
+  - `TOTAL_CELL_COUNT` // 원본
+  - `MINE_COUNT` // 원본
+  - `MINE_BOARD_ORIGINAL` // 원본
+- 상태 타입
+  - `GameState`: 'GAME_OVER' or 'COMPLETE' or 'PLAYING'
+  - `CellState`: 'none' or 'mine' or 'flag' or number;
+  - `Board`: CellState[][]
+  - `PositionInfo`: { row: number, column: number }
+  - `Player`: { name: string, time: number }
+  - `RankData`: Player[]
 
-// boardData.ts 원본 데이터
-{
-  TOTAL_CELL_COUNT,     // 원본
-  MINE_COUNT,           // 원본
-  MINE_BOARD_ORIGINAL,  // 원본
-}
+### 테스트
 
-// 타입 정의
-type GameState = 'GAME_OVER' | 'COMPLETE' | 'PLAYING';
-
-type CellState = 'none' | 'mine' | 'flag' | number;
-type Board = CellState[][];
-
-interface PositionInfo {
-  row: number;
-  column: number;
-}
-
-interface Player {
-  name: string;
-  time: number;
-}
-type RankData = Player[];
-```
-
-### 6. 구조 트리
-
-```
-├── README.md
-├── package-lock.json
-├── package.json
-├── previews
-│   └── propAdding.png
-├── public
-│   ├── favicon.ico
-│   ├── index.html
-│   └── manifest.json
-├── src
-│   ├── App.tsx
-│   ├── components
-│   │   ├── Cell.tsx
-│   │   ├── CompleteModal.tsx
-│   │   ├── GameOverModal.tsx
-│   │   ├── MineBoard.tsx
-│   │   ├── MineCount.tsx
-│   │   ├── ModalContainer.tsx
-│   │   ├── RankTable.tsx
-│   │   └── Timer.tsx
-│   ├── data
-│   │   ├── boardData.ts
-│   │   └── rankData.ts
-│   ├── img
-│   │   ├── explosion.png
-│   │   └── redFlag.png
-│   ├── index.css
-│   ├── index.tsx
-│   ├── interfaces
-│   │   └── index.ts
-│   ├── react-app-env.d.ts
-│   └── utils
-│       ├── checkComplete.ts
-│       ├── countMineAround.ts
-│       └── createNewMineBoard.ts
-├── tsconfig.json
-└── yarn.lock
-```
-
-### 7. 테스트 방법
-
-`src/data/boardData.ts` 파일에 테스트 셋들이 주석처리 되어있습니다. 테스트 용도로 아주 쉬운 난이도도 사용해 볼 수 있습니다. `MINE_COUNT`와 `MINE_BOARD_ORIGINAL`의 주석 처리를 변경하여 테스트 셋을 사용해 볼 수 있습니다.
-
----
-
-## 구현 후 정리
+`src/data/boardData.ts` 파일에 테스트 셋들이 주석처리 되어있습니다. `MINE_COUNT`와 `MINE_BOARD_ORIGINAL`의 주석 처리를 변경하여 아주 쉬운 난이도도 지뢰보드를 변경시켜 볼 수 있습니다.
 
 ### 개발하며 중요시 생각했던 점
 
@@ -181,42 +130,41 @@ type RankData = Player[];
   - 파악하기 어려운 이름 피하기
   - 비슷한 유형은 유사성을 가지도록 하기
 - 타입스크립트 타입 정의를 잘 사용해보기
-- 모든 파일들의 코드 스타일이 일관성있게 하기
-- 커밋 메시지에 라벨 사용하기
+- 모든 파일들의 코드 스타일 일관성 유지
+- 커밋 메시지에 라벨 사용
 - 알아보기 쉬운 커밋 단위로 분리
 
 ---
 
 ### Redux를 사용하지 않았던 선택에 대하여
 
-프로젝트 규모가 크지 않기 때문에 Prop drilling 문제가 없어 리덕스를 사용하지 않았습니다. 개발 후에 이 선택에 대해 느낀점을 적어보았습니다.
+프로젝트 규모가 크지 않기 때문에 Prop drilling 문제가 없어 리덕스를 사용하지 않았습니다. 때문에 비즈니스 로직들이 Props를 통해 컴포넌트들에게 전달되었습니다. 개발 후에 이 선택에 대해 느낀점을 적어보았습니다.
 
-#### 1. Prop drilling 측면으로는 불필요
+- Prop drilling 측면으로는 불필요
 
-Prop drilling 최대 depth가 두단계로 깊지 않아서 약간의 집중력만 사용한다면 코드 파악에 심각한 문제는 없었습니다.
-(`예) App > MineBoard > Cell`)
+  - Prop drilling 최대 depth가 두단계로 깊지 않아서 약간의 집중력만 사용한다면 코드 파악에 큰 문제는 없었습니다.
+    (`예) App > MineBoard > Cell`)
 
-#### 2. 컴포넌트 기능 미리보기 & 예상하기 가능
+- 컴포넌트 동작 예상 가능
 
-Redux를 사용하지 않아 비즈니스 로직들이 Props를 통해 컴포넌트에 전달되었습니다. 이 전달되는 Props들을 읽음으로써 컴포넌트 파일을 열어서 읽어보지 않아도 어떤 기능을 수행하는지 미리 예상, 파악할 수 있었던 측면에서는 좋았습니다.
+  - 전달되는 Props들을 읽음으로써 컴포넌트 파일을 열어서 읽어보지 않아도 어떤 기능을 수행하는지 미리 파악할 수 있었던 측면에서는 좋았습니다.
 
-```HTML
-예) <CompleteModal updateRankData={updateRankData} updateGameState={updateGameState} ... />
-```
+  ```HTML
+  예) <CompleteModal updateRankData={updateRankData} updateGameState={updateGameState} ... />
+  ```
 
-#### 3. Props 추가 작업의 번거로움
+- 새로운 Props 추가 작업의 번거로움
+  <img src="./previews/propAdding.png" alt="example" />
 
-새롭게 Props로 전달할 값을 추가할 때마다 3곳(`JSX`, `interface`, `component file`)에 코드를 추가해야하는 작은 번거로움이 있었습니다.
+  - 새롭게 Props로 전달할 값을 추가할 때마다 3곳(`JSX`, `interface`, `component file`)에 코드를 추가해야하는 작은 번거로움이 있었습니다.
 
-<img src="./previews/propAdding.png" alt="example" />
+- 늘어나는 JSX 라인에 대한 부담
 
-#### 4. 늘어나는 JSX 라인에 대한 부담
+  - 점점 증가하는 JSX 라인이 코드 가독성에 안좋은 영향을 미치지 않을까 조금 염려스러웠습니다.
 
-점점 증가하는 JSX 라인이 코드 가독성에 안좋은 영향을 미치지 않을까 조금 부담스러웠습니다.
+- 결론
 
-#### 결론
-
-이번 프로젝트는 규모가 작기 때문에 Redux를 사용하지 않았어도 괜찮은 정도였던 것 같습니다. 하지만 프로젝트가 조금만 더 커지더라도 비즈니스 로직을 따로 분리시켜서 Props로 전달하지 않는 방식이 유지보수성, 가독성 측면에서 더 좋겠다는 생각이 들었습니다.
+  - 이번 프로젝트는 규모가 작기 때문에 Redux를 사용하지 않았어도 괜찮은 정도였던 것 같습니다. 하지만 프로젝트가 조금만 더 커지더라도 비즈니스 로직을 따로 분리시켜서 Props로 전달하지 않는 방식이 유지보수성, 가독성 측면에서 더 좋겠다는 생각이 들었습니다.
 
 ---
 
@@ -262,7 +210,51 @@ Redux를 사용하지 않아 비즈니스 로직들이 Props를 통해 컴포넌
 
 ---
 
-🙂 아래 내용은 실제 구현과 달라진 점이 많아 읽는 것은 불필요합니다
+### 프로젝트 트리 구조
+
+```
+├── README.md
+├── package-lock.json
+├── package.json
+├── previews
+│ └── propAdding.png
+├── public
+│ ├── favicon.ico
+│ ├── index.html
+│ └── manifest.json
+├── src
+│ ├── App.tsx
+│ ├── components
+│ │ ├── Cell.tsx
+│ │ ├── CompleteModal.tsx
+│ │ ├── GameOverModal.tsx
+│ │ ├── MineBoard.tsx
+│ │ ├── MineCount.tsx
+│ │ ├── ModalContainer.tsx
+│ │ ├── RankTable.tsx
+│ │ └── Timer.tsx
+│ ├── data
+│ │ ├── boardData.ts
+│ │ └── rankData.ts
+│ ├── img
+│ │ ├── explosion.png
+│ │ └── redFlag.png
+│ ├── index.css
+│ ├── index.tsx
+│ ├── interfaces
+│ │ └── index.ts
+│ ├── react-app-env.d.ts
+│ └── utils
+│ ├── checkComplete.ts
+│ ├── countMineAround.ts
+│ └── createNewMineBoard.ts
+├── tsconfig.json
+└── yarn.lock
+```
+
+---
+
+🙂 아래 내용은 코드 작업 전 설계를 작성했던 내용으로 실제 구현하며 달라진 점이 많습니다.
 
 ## 구현 시작 전
 
@@ -325,7 +317,7 @@ interface Record {
 
 ## 기타
 
-최근 토이 프로젝트로 작업했던 TV Focus 프로젝트 소스코드 주소 함께 전달드립니다.
+최근 토이 프로젝트로 작업했던 TV Focus Control 프로젝트 링크도 함께 전달드립니다. 토이 프로젝트를 만드는 것을 좋아해서 이외에도 github에서 여러 프로젝트들을 보실 수 있습니다!
 
-- https://github.com/peppermintc/tv-focus-control
 - https://peppermintc.github.io/tv-focus-control/
+- https://github.com/peppermintc/tv-focus-control
