@@ -1,15 +1,15 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components';
+import { MINE_BOARD_ORIGINAL, MINE_COUNT } from './data/boardData';
+import { RANK_DATA } from './data/rankData';
+import { Board, GameState, RankData } from './interfaces';
+import { checkComplete } from './utils/checkComplete';
 import CompleteModal from './components/CompleteModal';
 import GameOverModal from './components/GameOverModal';
 import MineBoard from './components/MineBoard';
 import MineCount from './components/MineCount';
 import RankTable from './components/RankTable';
 import Timer from './components/Timer';
-import { MINE_BOARD_ORIGINAL, MINE_COUNT } from './data/boardData';
-import { RANK_DATA } from './data/rankData';
-import { Board, GameState, RankData } from './interfaces';
-import { checkComplete } from './utils';
 
 const MineSweeperPage = styled.div`
   height: 100vh;
