@@ -1,4 +1,4 @@
-import { GameState } from '../interfaces/interfaces';
+import { GameState } from '../interfaces';
 import ModalContainer from './ModalContainer';
 
 interface GameOverModalProps {

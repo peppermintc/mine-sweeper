@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Player, RankData } from '../interfaces/interfaces';
+import { Player, RankData } from '../interfaces';
 
 interface RankTableProps {
   rankData: RankData;

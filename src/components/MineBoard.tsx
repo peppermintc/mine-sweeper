@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Board, GameState } from '../interfaces/interfaces';
+import { Board, GameState } from '../interfaces';
 import Cell from './Cell';
 
 interface MineBoardProps {

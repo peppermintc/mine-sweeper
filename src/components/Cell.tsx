@@ -1,11 +1,6 @@
 import { MouseEvent } from 'react';
 import styled from 'styled-components';
-import {
-  CellState,
-  Board,
-  PositionInfo,
-  GameState,
-} from '../interfaces/interfaces';
+import { CellState, Board, PositionInfo, GameState } from '../interfaces';
 import { countMineAround, createNewMineBoard } from '../utils';
 import RedFlag from '../img/redFlag.png';
 

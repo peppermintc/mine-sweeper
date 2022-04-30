@@ -1,4 +1,4 @@
-import { Player } from '../interfaces/interfaces';
+import { Player } from '../interfaces';
 
 export const RANK_DATA: Player[] = [
   { name: 'player0', time: 100 },

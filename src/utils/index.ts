@@ -3,7 +3,7 @@ import {
   MINE_COUNT,
   TOTAL_CELL_COUNT,
 } from '../data/boardData';
-import { CellState, Board, PositionInfo } from '../interfaces/interfaces';
+import { CellState, Board, PositionInfo } from '../interfaces';
 
 const foundAllNone = (mineBoard: Board): boolean => {
   let numberCount: number = 0;

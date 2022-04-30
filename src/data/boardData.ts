@@ -1,4 +1,4 @@
-import { Board } from '../interfaces/interfaces';
+import { Board } from '../interfaces';
 
 export const TOTAL_CELL_COUNT = 64;
 

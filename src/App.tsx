@@ -8,7 +8,7 @@ import RankTable from './components/RankTable';
 import Timer from './components/Timer';
 import { MINE_BOARD_ORIGINAL, MINE_COUNT } from './data/boardData';
 import { RANK_DATA } from './data/rankData';
-import { Board, GameState, RankData } from './interfaces/interfaces';
+import { Board, GameState, RankData } from './interfaces';
 import { checkComplete } from './utils';
 
 const MineSweeperPage = styled.div`

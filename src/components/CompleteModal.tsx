@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import { GameState, Player, RankData } from '../interfaces/interfaces';
+import { GameState, Player, RankData } from '../interfaces';
 import ModalContainer from './ModalContainer';
 
 interface CompleteModalProps {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { GameState } from '../interfaces/interfaces';
+import { GameState } from '../interfaces';
 
 interface TimerProps {
   gameState: GameState;
