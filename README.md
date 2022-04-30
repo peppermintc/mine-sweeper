@@ -41,16 +41,16 @@ cellState는 4가지 상태 중 한가지를 가집니다
 셀 상태(cellState)값에 따라 다르게 동작합니다
 
 - 좌 클릭
-  - `'mine'`: gameState > GAME_OVER
-  - `'none'`: cellState > 주변 지뢰 개수
+  - `'mine'`: gameState를 GAME_OVER로 변경
+  - `'none'`: cellState를 주변 지뢰 개수로 변경
   - `'flag'`: 아무 동작도 일어나지 않음
   - `number`: 아무 동작도 일어나지 않음
 - 우 클릭
-  - `'mine'`: cellState > flag, mineCount - 1
+  - `'mine'`: cellState를 flag로 변경 & 현재 mineCount 빼기 1
     - mineCount가 0이면 cellState를 변경하지 않고 아무 동작도 일어나지 않음
-  - `'none'`: cellState > flag, mineCount - 1
+  - `'none'`: cellState를 flag로 변경 & 현재 mineCount 빼기 1
     - mineCount가 0이면 cellState를 변경하지 않고 아무 동작도 일어나지 않음
-  - `'flag'`: cellState flag > 원본(MINE_BOARD_ORIGINAL)의 cellState, mineCount + 1
+  - `'flag'`: cellState flag에서 원본(MINE_BOARD_ORIGINAL)의 cellState로 변경 & 현재 mineCount 더하기 1
   - `number`: 아무 동작도 일어나지 않음
 
 ### 지뢰보드 원본과 사본 (MINE_BOARD_ORIGINAL & mineBoard)
@@ -66,8 +66,10 @@ cellState는 4가지 상태 중 한가지를 가집니다
 
 - `countMineAround.ts`: 인접 셀 지뢰 개수 카운트
 - `checkComplete.ts`: 게임 성공 여부 체크
-  - `foundAllNone`: 지뢰가 아닌 모든 칸을 확인했는지 판별 (mineBoard에서 `number` 개수를 카운트)
-  - `foundAllMine`: 지뢰를 모두 깃발로 알맞게 표시했는지 판별 (MINE_BOARD_ORIGINAL `mine`과 mineBoard `flag`를 비교)
+  - `foundAllNone`: 지뢰가 아닌 모든 칸을 확인했는지 판별
+    (mineBoard에서 `number` 개수를 카운트)
+  - `foundAllMine`: 지뢰를 모두 깃발로 알맞게 표시했는지 판별
+    (MINE_BOARD_ORIGINAL `mine`과 mineBoard `flag`를 비교)
 - `createNewBoard.ts`: 업데이트된 새로운 보드를 리턴
   - `noneToNumber`: 클릭한 cellState `'none'`에서 `number`로 변경
   - `somethingToFlag`: 클릭한 cellState를 `'flag'`로 변경
