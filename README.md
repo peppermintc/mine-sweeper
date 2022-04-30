@@ -322,3 +322,10 @@ interface Record {
 8. 게임 설명 표시
 
 ---
+
+## 기타
+
+최근 토이 프로젝트로 작업했던 TV Focus 프로젝트 소스코드 주소 함께 전달드립니다.
+
+- https://github.com/peppermintc/tv-focus-control
+- https://peppermintc.github.io/tv-focus-control/
