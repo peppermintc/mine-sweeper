@@ -322,11 +322,3 @@ interface Record {
 8. 게임 설명 표시
 
 ---
-
-## 기타
-
-최근 작업했던 두가지 프로젝트 소스코드 주소입니다. 하나는 토이 프로젝트이고 다른 하나는 공개 가능한 모바일 커뮤니티 페이지 기업 과제입니다.
-
-- https://github.com/peppermintc/tv-focus-control
-- https://peppermintc.github.io/tv-focus-control/
-- https://github.com/peppermintc/community-mobile
