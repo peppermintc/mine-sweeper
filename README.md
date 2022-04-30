@@ -3,9 +3,7 @@
 - 2022.4.29: 개발 시작, 기능 구현 완료
 - 2022.4.30: README.md 작성, CSS style 수정
 
----
-
-## Previews
+<img src="./previews/preview.png" alt="preview" />
 
 ---
 
@@ -46,7 +44,8 @@
     - `지뢰가 아닐 경우`: 숫자로 주변 지뢰 개수 표시
     - `깃발, 숫자일 경우`: 아무동작도 일어나지 않음
   - 우 클릭
-    - `지뢰, 지뢰가 아닐 경우`: 깃발 표시, 남은 지뢰 개수 - 1 (남은 지뢰 개수가 0이라면 깃발을 표시하지 않고 아무 동작도 일어나지 않음)
+    - `지뢰, 지뢰가 아닐 경우`: 깃발 표시, 남은 지뢰 개수 - 1
+      (남은 지뢰 개수가 0이라면 깃발을 표시하지 않고 아무 동작도 일어나지 않음)
     - `깃발일 경우`: 깃발 제거, 남은 지뢰 개수 + 1
     - `숫자일 경우`: 아무동작도 일어나지 않음
 
@@ -68,17 +67,109 @@
 - `flag`: 깃발
 - `숫자`: 인접한 셀들의 지뢰의 개수, 자신은 지뢰가 X
 
-### 3, 폴더 구조
+### 3. 폴더 구조
 
-### 4. 컴포넌트 종류
+- `components`: React UI 컴포넌트 파일 보관
+  - `Cell.tsx`: 셀
+  - `CompleteModal.tsx`: 성공시 보여지는 모달
+  - `GameOverModal.tsx`: 실패시 보여지는 모달
+  - `MineBoard.tsx`: 지뢰판 8x8
+  - `MineCount.tsx`: 남은 지뢰 개수 표시
+  - `ModalContainer.tsx`: 모달에 공통으로 사용되는 컨테이너 컴포넌트
+  - `RankTable.tsx`: 기록 순위표 표시
+  - `Timer.tsx`: 소요 시간 표시
+- `data`: 보드 데이터, 랭킹 데이터 원본 보관
+- `img`: 이미지 파일 보관
+- `interfaces`: 타입스크립트 인터페이스, 타입 코드 보관
+- `utils`: util 함수들 보관
+  - `checkComplete.ts`: 게임 성공 여부 체크 함수 보관
+  - `countMineAround.ts`: 주변 지뢰 개수 카운트 해주는 함수 보관
+  - `createNewBoard.ts`: 업데이트된 새로운 보드를 리턴해주는 함수 보관
 
 ### 5. 상태 값
 
+```javascript
+// App State
+{
+  rankData,   // 복사본
+  mineBoard,  // 복사본
+  mineCount,  // 복사본
+  gameState,
+  currentTime,
+  showGameOverModal,
+  showCompleteModla,
+}
+
+// boardData.ts 원본 데이터
+{
+  TOTAL_CELL_COUNT,     // 원본
+  MINE_COUNT,           // 원본
+  MINE_BOARD_ORIGINAL,  // 원본
+}
+
+// 타입 정의
+type GameState = 'GAME_OVER' | 'COMPLETE' | 'PLAYING';
+
+type CellState = 'none' | 'mine' | 'flag' | number;
+type Board = CellState[][];
+
+interface PositionInfo {
+  row: number;
+  column: number;
+}
+
+interface Player {
+  name: string;
+  time: number;
+}
+type RankData = Player[];
+```
+
 ### 6. 구조 트리
+
+```
+├── README.md
+├── package-lock.json
+├── package.json
+├── previews
+│   └── propAdding.png
+├── public
+│   ├── favicon.ico
+│   ├── index.html
+│   └── manifest.json
+├── src
+│   ├── App.tsx
+│   ├── components
+│   │   ├── Cell.tsx
+│   │   ├── CompleteModal.tsx
+│   │   ├── GameOverModal.tsx
+│   │   ├── MineBoard.tsx
+│   │   ├── MineCount.tsx
+│   │   ├── ModalContainer.tsx
+│   │   ├── RankTable.tsx
+│   │   └── Timer.tsx
+│   ├── data
+│   │   ├── boardData.ts
+│   │   └── rankData.ts
+│   ├── img
+│   │   ├── explosion.png
+│   │   └── redFlag.png
+│   ├── index.css
+│   ├── index.tsx
+│   ├── interfaces
+│   │   └── index.ts
+│   ├── react-app-env.d.ts
+│   └── utils
+│       ├── checkComplete.ts
+│       ├── countMineAround.ts
+│       └── createNewMineBoard.ts
+├── tsconfig.json
+└── yarn.lock
+```
 
 ### 7. 테스트 방법
 
-아주 쉬운 난이도의 테스트 셋을 2개 준비하였습니다. `src/data/boardData.ts` 파일에서 `MINE_COUNT`와 `MINE_BOARD_ORIGINAL`의 주석 처리를 변경하여 보드 테스트 셋을 사용해 볼 수 있습니다.
+`src/data/boardData.ts` 파일에 테스트 셋들이 주석처리 되어있습니다. 테스트 용도로 아주 쉬운 난이도도 사용해 볼 수 있습니다. `MINE_COUNT`와 `MINE_BOARD_ORIGINAL`의 주석 처리를 변경하여 테스트 셋을 사용해 볼 수 있습니다.
 
 ---
 
@@ -102,7 +193,8 @@
 
 #### 1. Prop drilling 측면으로는 불필요
 
-Prop drilling 최대 depth가 두단계로 깊지 않아서 약간의 집중력만 사용한다면 코드 파악에 심각한 문제는 없었습니다. (`예) App > MineBoard > Cell`)
+Prop drilling 최대 depth가 두단계로 깊지 않아서 약간의 집중력만 사용한다면 코드 파악에 심각한 문제는 없었습니다.
+(`예) App > MineBoard > Cell`)
 
 #### 2. 컴포넌트 기능 미리보기 & 예상하기 가능
 
