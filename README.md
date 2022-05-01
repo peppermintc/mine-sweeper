@@ -73,7 +73,7 @@ cellState는 4가지 상태 중 한가지를 가집니다
 - `createNewBoard.ts`: 업데이트된 새로운 보드를 리턴
   - `noneToNumber`: 클릭한 cellState `'none'`에서 `number`로 변경
   - `somethingToFlag`: 클릭한 cellState를 `'flag'`로 변경
-  - `flagToSomething`: 클릭한 cellState를 `'flag''`에서 원본보드 cellState로 변경
+  - `flagToSomething`: 클릭한 cellState를 `'flag'`에서 원본보드 cellState로 변경
 
 ### gameState에 따른 동작
 
@@ -124,7 +124,7 @@ cellState는 4가지 상태 중 한가지를 가집니다
 
 ### 테스트
 
-`src/data/boardData.ts` 파일에 테스트 셋들이 주석처리 되어있습니다. `MINE_COUNT`와 `MINE_BOARD_ORIGINAL`의 주석 처리를 변경하여 아주 쉬운 난이도도 지뢰보드를 변경시켜 볼 수 있습니다.
+`src/data/boardData.ts` 파일에 테스트 셋들이 주석처리 되어있습니다. `MINE_COUNT`와 `MINE_BOARD_ORIGINAL`의 주석 처리를 변경하여 아주 쉬운 난이도로 지뢰보드를 변경시켜 볼 수 있습니다.
 
 ### 개발하며 중요시 생각했던 점
 
@@ -178,13 +178,13 @@ cellState는 4가지 상태 중 한가지를 가집니다
 
 셀 클릭시 지뢰가 아니면 `cellState`값이 number 타입으로 바뀝니다. number 타입을 가진 셀은 확정적으로 지뢰가 아닌 셀이고 이것을 카운트해서 `(전체 셀 개수 - 전체 지뢰 개수)`와 같을 경우 성공으로 체크하도록 하였습니다.
 
-구현부: util 폴더 checkComplete.foundAllNone 함수
+구현부: utils 폴더 checkComplete.foundAllNone 함수
 
 #### 2. 모든 지뢰 위에 깃발을 꽂은 경우
 
 원본 지뢰보드(`MINE_BOARD_ORIGINAL`)와 현재 사용 중인 복사본 지뢰보드(`mineBoard`)의 값을 비교해서 `flag`를 `mine`에 정확하게 꽂은 경우를 카운트하였습니다. 정확하게 깃발을 꽂은 경우가 지뢰의 총 개수와 같다면 성공으로 체크하는 로직입니다.
 
-구현부: util 폴더 checkComplete.foundAllMine 함수
+구현부: utils 폴더 checkComplete.foundAllMine 함수
 
 매번 보드 업데이트시마다 이 경우를 체크하는 것은 효율적이지 않아서 깃발을 최대로 꽂아서 남은 지뢰 개수 카운트가 0이 되었을 때만 이 경우를 체크하도록 하였습니다.
 
